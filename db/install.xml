@@ -85,6 +85,7 @@
         <INDEX NAME="sessionid" UNIQUE="false" FIELDS="sessionid"/>
         <INDEX NAME="studentid" UNIQUE="false" FIELDS="studentid"/>
         <INDEX NAME="statusid" UNIQUE="false" FIELDS="statusid"/>
+        <INDEX NAME="sessionid_studentid_statusid" UNIQUE="false" FIELDS="sessionid, studentid, statusid"/>
       </INDEXES>
     </TABLE>
     <TABLE NAME="attendance_statuses" COMMENT="attendance_statuses table retrofitted from MySQL">
