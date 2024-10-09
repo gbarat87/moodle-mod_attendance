@@ -731,6 +731,13 @@ function xmldb_attendance_upgrade($oldversion=0) {
         upgrade_mod_savepoint(true, 2022083100, 'attendance');
     }
     if ($oldversion < 2022090900) {
+        $table = new xmldb_table('attendance_log');
+        $index = new xmldb_index('sessionid_studentid_statusid', XMLDB_KEY_UNIQUE, ['sessionid', 'studentid', 'statusid']);
+        // Conditionally launch add index sessionid_studentid_statusid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
         if (!empty($CFG->dbfamily) && $CFG->dbfamily == 'postgres') {
             $sql = 'DELETE FROM {attendance_log} a
                         WHERE a.id NOT IN (
@@ -812,6 +819,21 @@ function xmldb_attendance_upgrade($oldversion=0) {
 
         // Attendance savepoint reached.
         upgrade_mod_savepoint(true, 2023020106, 'attendance');
+    }
+
+    if ($oldversion < 2023020109) {
+
+        // Add index on attendance_log for performance increase with update 2022090900.
+        $table = new xmldb_table('attendance_log');
+        $index = new xmldb_index('sessionid_studentid_statusid', XMLDB_KEY_UNIQUE, ['sessionid', 'studentid', 'statusid']);
+
+        // Conditionally launch add index sessionid_studentid_statusid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Attendance savepoint reached.
+        upgrade_mod_savepoint(true, 2023020109, 'attendance');
     }
 
     return true;
